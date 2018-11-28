@@ -7,7 +7,7 @@
 			width: 250px;
 			height: 200px;
 			overflow: hidden;
-			/*position: relative;*/
+			position: relative;
 			border: 5px solid green;
 			
 		}
@@ -36,6 +36,20 @@
 			bottom: 0px;
 			left: 50%;
 		}
+		ul{
+			list-style-type: none;
+		}
+		ul li{
+			border: 1px solid green;
+			width: 15px;
+			height: 15px;
+			margin-left: 10px;
+			float: left;
+			border-radius: 50%;
+		}
+		ul li.active{
+			background: red;
+		}
 	</style>
 	<!-- <script type="text/javascript" src="script.js"></script> -->
 </head>
@@ -49,7 +63,12 @@
 			</div>
 			<button id="prev">Prev</button>
 			<button id="next">Next</button>
-		</div>	
+		</div>
+		<ul id="list">
+			<li id="1"></li>
+			<li id="2"></li>
+			<li id="3"></li>
+		</ul>	
 	<!-- </div> -->
 	
 	<script type="text/javascript" src="scripts.js">	</script>
