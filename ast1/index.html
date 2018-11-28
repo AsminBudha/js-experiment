@@ -13,11 +13,12 @@
 		}
 		#slider-container{
 			min-width: 1000%;
-			position: absolute;
-			left: 0px;
+			position: relative;
+			margin-left: 0px;
 		}
 		#slider-container img{
 			/*display: none;*/
+			position: absolute;
 			float: left;
 		}
 		.clearfix::after {
@@ -35,22 +36,41 @@
 			bottom: 0px;
 			left: 50%;
 		}
+		ul{
+			list-style-type: none;
+		}
+		ul li{
+			border: 1px solid green;
+			width: 15px;
+			height: 15px;
+			margin-left: 10px;
+			float: left;
+			border-radius: 50%;
+		}
+		ul li.active{
+			background: red;
+		}
 	</style>
 	<!-- <script type="text/javascript" src="script.js"></script> -->
 </head>
 <body>
 	<!-- <div id="silder"> -->
 		<div id="slider-container-wrapper">
-			<div id="slider-container" style="left: 0px;">
+			<div id="slider-container">
 				<img src="1.jpeg" alt="Image 1">
 				<img src="2.jpeg" alt="Image 2">
 				<img src="3.jpeg" alt="Image 3">
 			</div>
 			<button id="prev">Prev</button>
 			<button id="next">Next</button>
-		</div>	
+		</div>
+		<ul id="list">
+			<li id="1"></li>
+			<li id="2"></li>
+			<li id="3"></li>
+		</ul>	
 	<!-- </div> -->
 	
-	<script type="text/javascript" src="script.js">	</script>
+	<script type="text/javascript" src="scripts.js">	</script>
 </body>
 </html>

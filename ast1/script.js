@@ -1,6 +1,8 @@
 var sliderContainer=document.getElementById('slider-container');
+
 var prev=document.getElementById('prev');
 var next=document.getElementById('next');
+
 var images=sliderContainer.children;
 
 var leftWidth=new Array(images.length+1);
