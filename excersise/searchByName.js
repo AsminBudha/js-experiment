@@ -6,7 +6,7 @@ var fruits = [
 /** Simple Implementation*/
 function searchByName(arr,name){
 	var result=sortByKey(arr,'name');
-	console.log(result);
+	// console.log(result);
 
 	for(var i=0;i<arr.length;i++){
 		if(name.toLowerCase()==arr[i].name.toLowerCase()){

@@ -21,10 +21,12 @@ var people = [{
   }],
 }];
 
+console.log('Normalization');
 function traverse(obj,output){
   if(!obj.children){
     return output;
   }
+  // console.log(output);
   for(var i=0;i<obj.children.length;i++){
     var node={id:obj.children[i].id,name:obj.children[i].name,children:[]};
     output[obj.children[i].id]=node;
@@ -34,6 +36,17 @@ function traverse(obj,output){
   return output;
 }
 
+// var fromR=people.reduce(function(acc,val,index){
+//   // for(var i=0;i<tree.length;i++){
+//     var obj={id:val.id,name:val.name,children:[]};
+//     acc[val.id]=obj;
+//     acc=traverse(val,acc);
+//     // console.log(output);
+//   // }
+//   return acc;
+// });
+// console.log("From Reduce Normalization");
+// console.log(fromR);
 function normalize(tree){
   var output={};
   for(var i=0;i<tree.length;i++){

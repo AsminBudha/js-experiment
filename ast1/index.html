@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Assignment 1</title>
+	<style type="text/css">
+		#slider-container-wrapper{
+			width: 250px;
+			height: 200px;
+			overflow: hidden;
+			position: relative;
+			border: 5px solid green;
+			
+		}
+		#slider-container{
+			min-width: 1000%;
+			position: absolute;
+			left: 0px;
+		}
+		#slider-container img{
+			/*display: none;*/
+			float: left;
+		}
+		.clearfix::after {
+		    content: "";
+		    clear: both;
+		    display: table;
+		}
+		#slider-container-wrapper button#prev{
+			position: absolute;
+			bottom: 0px;
+			left: 20%;
+		}
+		#slider-container-wrapper button#next{
+			position: absolute;
+			bottom: 0px;
+			left: 50%;
+		}
+	</style>
+	<!-- <script type="text/javascript" src="script.js"></script> -->
+</head>
+<body>
+	<!-- <div id="silder"> -->
+		<div id="slider-container-wrapper">
+			<div id="slider-container" style="left: 0px;">
+				<img src="1.jpeg" alt="Image 1">
+				<img src="2.jpeg" alt="Image 2">
+				<img src="3.jpeg" alt="Image 3">
+			</div>
+			<button id="prev">Prev</button>
+			<button id="next">Next</button>
+		</div>	
+	<!-- </div> -->
+	
+	<script type="text/javascript" src="script.js">	</script>
+</body>
+</html>
