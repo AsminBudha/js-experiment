@@ -17,7 +17,7 @@ var output=input.reduce(function(acc,val){
 
 console.log(output);
 
-var inputN=[[1,[7,8],3],[2,4,5],6];
+var inputN=[[1,[7,8],3],[2,4,5],6,{id:2}];
 
 function traverse(acc,val){
 	if(Array.isArray(val)){
