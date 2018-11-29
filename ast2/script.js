@@ -106,12 +106,15 @@ function Ball(x,y,radius,index){
 }
 
 function main(){    
-	for(var i=0;i<10;i++){
+	for(var i=0;i<5;i++){
 
         var r=Math.ceil((Math.random()*10)+5);
-        var x=Math.ceil((Math.random()*500-2*r)+(2+r));
-        var y=Math.ceil((Math.random()*500-2*r)+(2+r));
+        // console.log();
+        var x=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
+        var y=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
         
+        console.log(r,x,y);
+
         var ball=new Ball(x,y,r,i);
         ball.draw();
         ball.move();        
