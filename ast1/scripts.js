@@ -139,53 +139,50 @@ next.addEventListener('click',function(e){
 	}
 });
 
+var listInterval;
+
 document.addEventListener('click',function(e){
 	var target=e.target;
-	if(target.parentNode.getAttribute('id')=='list'){
+	if(!listInterval && target.parentNode.getAttribute('id')=='list'){
 		var selectedList=target.getAttribute('id');
 
-		// console.log(selectedList);
 
-		clearInterval(mainInterval);
+		
 		var temp=currentImageIndex;
 		
 		var count=Math.abs(selectedList-currentImageIndex)+1;
 
-		if(selectedList>temp){
+		console.log(selectedList,temp);
+		if(selectedList>temp+1){
+			clearInterval(mainInterval);
+
 			positive=true;
-			nextInterval=setInterval(function(){
+			listInterval=setInterval(function(){
 				process();
 				
 				if(currentImageIndex+1>=selectedList){
-					// console.log('next Ended');
-					clearInterval(nextInterval);
-					nextInterval=false;
+					
+					clearInterval(listInterval);
+					listInterval=false;
 					run();
 				}
 				
 			},5);
+
 		}
 		else if(selectedList<temp+1){
+			clearInterval(mainInterval);
+
 			positive=false;
 			
-			nextInterval=setInterval(function(){
-
-				// if(temp!=currentImageIndex){
-				// 	count--;
-				// 	temp=currentImageIndex;
-				// 	console.log(temp,count);
-				// 	if(temp==1)
-				// 		temp=-1;
-				// 	// console.log(count);
-				// }
+			listInterval=setInterval(function(){
 
 				process();
 				
 				if( currentImageIndex<selectedList){
-					console.log(currentImageIndex,selectedList);
-					console.log('Hi');
-					clearInterval(nextInterval);
-					nextInterval=false;
+
+					clearInterval(listInterval);
+					listInterval=false;
 					run();
 				}
 			},5);
