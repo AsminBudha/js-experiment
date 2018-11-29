@@ -62,9 +62,13 @@ function Ball(x,y,radius,index){
         this.y+=y;
     };
     this.checkCollision=function(){        
+    	
+    	//Container collison
     	if(this.x+this.radius>=500 || this.x-this.radius<=0 || this.y-this.radius<=0 || this.y+radius>=500){
             this.direction=changeDirection(this.direction);
         }
+
+        //Ball Collision
         for(var i=0;i<balls.length;i++){
             if(i==this.index)
                 continue;
@@ -106,9 +110,9 @@ function Ball(x,y,radius,index){
 }
 
 function main(){    
-	for(var i=0;i<5;i++){
+	for(var i=0;i<10;i++){
 
-        var r=Math.ceil((Math.random()*10)+5);
+        var r=Math.ceil((Math.random()*20)+10);
         // console.log();
         var x=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
         var y=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
