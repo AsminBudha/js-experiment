@@ -1,194 +1,266 @@
-var sliderContainer = document.getElementById('slider-container');
-var ul=document.getElementById('list');
+var sliderThat=null;
+const DEFAULT_WIDTH=1300;
+class Slider{
+  constructor(wrapper){
+    this.wrapper = document.getElementById(wrapper);
+    this.wrapper = this.styleWrapper(this.wrapper);
 
-var prev=document.getElementById('prev');
-var next=document.getElementById('next');
+    this.createContainer();
+    this.createPrevNextButton();
+    this.createListButton();
 
-var list=ul.children;
-list[0].classList.add('active');
+    this.run();
+  }
 
-if(!sliderContainer.style.marginLeft){
-	sliderContainer.style.marginLeft = 0+'px';
+  run(){
+    this.tick=0;
+    this.slideLeft=true;
+    this.delay=true;
+    this.leftVal=0;
+    this.marginLeft=0;
+
+    sliderThat=this;
+
+    //stores originial direction which is changed after button is clicked
+    this.orgSlideLeft=null;
+    this.toBeSlide=0;
+    this.prev.addEventListener('click',function(e){
+      if(sliderThat.orgSlideLeft==null && sliderThat.marginLeft<0){
+        sliderThat.slideTimes(false);
+      }
+    });    
+
+    this.next.addEventListener('click',function(e){
+      if(sliderThat.orgSlideLeft==null && Math.abs(sliderThat.marginLeft)<(sliderThat.images.length-1)*sliderThat.width){
+        sliderThat.slideTimes(true);
+      }
+    });
+
+    this.ul.addEventListener('click',function(e){
+      var index=parseInt(e.target.classList[0]);
+      var curPos=Math.abs(sliderThat.marginLeft);
+      var posToBe=index*sliderThat.width;
+      if(curPos!=posToBe){
+        var times=Math.floor(Math.abs((posToBe-curPos))/sliderThat.width);
+        if(curPos%sliderThat.width==0){
+          times--;
+        }
+        if(posToBe<curPos){
+
+          sliderThat.slideTimes(false,times);
+        }
+        else if(posToBe>curPos){
+          sliderThat.slideTimes(true,times);
+        }
+      }
+    });
+
+
+    sliderThat.lis[0].style.background='red';
+
+    this.mainInterval=setInterval(this.slide,10);
+  }
+
+  slideTimes(isLeft,times=0){
+    sliderThat.orgSlideLeft=sliderThat.slideLeft;
+        
+    if(isLeft){//For Prev
+        sliderThat.toBeSlide=sliderThat.width-(Math.abs(sliderThat.marginLeft)%sliderThat.width);
+        
+        sliderThat.slideLeft=true;
+    }  
+    else{
+      sliderThat.toBeSlide=Math.abs(sliderThat.marginLeft)%sliderThat.width;  
+      
+      sliderThat.slideLeft=false;
+    }
+    if(sliderThat.toBeSlide==0){
+      sliderThat.toBeSlide=sliderThat.width;
+    }
+
+    console.log(times,sliderThat.toBeSlide);
+    while(times>0){
+      sliderThat.toBeSlide+=sliderThat.width;
+      times--;
+    }
+    console.log(sliderThat.marginLeft,sliderThat.toBeSlide);
+  }
+
+  slide(){
+    //On prev button clicked
+    // console.log(sliderThat.orgSlideLeft);
+    if(sliderThat.orgSlideLeft!=null){
+      // console.log('Working');
+      sliderThat.toBeSlide--;
+      
+      if(sliderThat.slideLeft!=sliderThat.orgSlideLeft){//For Delay
+        sliderThat.leftVal--;    
+      }
+      else{
+        sliderThat.leftVal++;
+      }
+
+      if(sliderThat.toBeSlide<0){
+        sliderThat.changeActiveList();
+        sliderThat.delay=true;
+        sliderThat.tick=1;
+        sliderThat.slideLeft=sliderThat.orgSlideLeft;
+        sliderThat.orgSlideLeft=null;
+        // console.log('Up',sliderThat.marginLeft);
+      }
+      else{
+        sliderThat.update();
+      }
+      return;
+    }
+
+
+    if(sliderThat.delay && sliderThat.tick>100){
+      sliderThat.tick=0;
+      sliderThat.delay=false;
+    }
+    if(!sliderThat.delay){
+      sliderThat.update();
+      sliderThat.leftVal++;
+      // console.log(sliderThat.marginLeft);
+    }
+
+    if(!sliderThat.delay && sliderThat.tick>=sliderThat.width-1){
+      sliderThat.delay=true;
+      sliderThat.tick=0;
+      sliderThat.changeActiveList();
+    }
+    
+    if(sliderThat.leftVal>=sliderThat.width*(sliderThat.images.length-1)){
+      
+      sliderThat.changeActiveList();
+      sliderThat.slideLeft=!sliderThat.slideLeft;
+      sliderThat.tick=0;
+      sliderThat.leftVal=0;
+
+      sliderThat.delay=true;
+      sliderThat.tick=0;
+    }
+
+
+    sliderThat.tick++;
+  }
+
+  changeActiveList(){
+      var activeIndex=Math.floor(Math.abs(sliderThat.marginLeft)/sliderThat.width);
+      if(sliderThat.slideLeft){
+        sliderThat.lis[activeIndex-1].style.background='white';
+      }
+      else{
+          sliderThat.lis[activeIndex+1].style.background='white';  
+      }
+      sliderThat.lis[activeIndex].style.background='red';
+  }
+
+  update(){
+    var slidePos = this.slideLeft?-1:1;
+    sliderThat.marginLeft+=slidePos;
+    sliderThat.container.style.marginLeft=sliderThat.marginLeft+'px';
+  }
+
+  createContainer(){
+    this.container = document.createElement('div');
+    this.container = this.styleContainer(this.container);
+    //Shift images inside slider into container
+    this.images = this.wrapper.children;
+
+    var temp=0;
+    while(this.images.length>0){
+      this.images[0].style.marginLeft=temp*this.width+'px';
+      this.images[0].style.position = 'absolute';
+
+      temp++;
+      this.container.appendChild(this.images[0]);
+    }
+
+    //Get all images from new position
+    this.images = this.container.children;
+
+    //append container into slider
+    this.wrapper.appendChild(this.container);
+  }
+
+  createPrevNextButton(){
+    this.prev = document.createElement('button');
+    this.prev.style.background = 'url(\'arrow-left.png\') no-repeat 100%';
+    this.prev.style.height = '20px';
+    this.prev.style.width = '20px';
+    this.prev.style.position = 'absolute';
+    this.prev.style.top = '40%';
+    this.prev.style.border = 'none';
+    this.prev.style.cursor = 'pointer';
+
+    this.next = document.createElement('button');
+    this.next.style.background = 'url(\'arrow-right.png\') no-repeat';
+    this.next.style.height = '20px';
+    this.next.style.width = '20px';
+    this.next.style.position = 'absolute';
+    this.next.style.top = '40%';
+    this.next.style.right = '0%';
+    this.next.style.border = 'none';
+    this.next.style.cursor ='pointer';
+
+    this.wrapper.appendChild(this.prev);
+    this.wrapper.appendChild(this.next);
+  }
+    
+  createListButton(){
+    this.ul = document.createElement('ul');
+    this.ul.style.listStyleType = 'none';
+    this.ul.style.position = 'absolute';
+    this.ul.style.left = '40%';
+    this.ul.style.bottom = '5%'
+    this.ul.style.cursor = 'pointer';
+
+    this.lis=[];
+    
+    for(var i=0;i<this.images.length;i++){
+      var li=document.createElement('li');
+      li=this.styleLi(li);
+      li.classList.add(i);
+      this.lis.push(li);
+      this.ul.appendChild(li);
+    }
+
+    this.wrapper.appendChild(this.ul);
+  }
+
+  styleWrapper(elem){
+    this.width=parseInt(elem.style.width);
+    if(!elem.style.width){
+
+      elem.style.width = DEFAULT_WIDTH+'px';
+      this.width=DEFAULT_WIDTH;
+    }
+    elem.style.height = '600px';
+    elem.style.overflow = 'hidden';
+    elem.style.position = 'relative';
+
+    return elem;
+  }
+
+  styleContainer(elem){
+    elem.style.minWidth = '1000%';
+    elem.style.marginLeft = '0px';
+    elem.position = 'relative';
+
+    return elem;
+  }
+
+  styleLi(elem){
+    elem.style.background = 'white';
+    elem.style.width = '15px';
+    elem.style.height = '15px';
+    elem.style.marginLeft = '10px';
+    elem.style.float = 'left';
+    elem.style.borderRadius = '50%';
+
+    return elem;
+  }
+
 }
-
-var prev = document.getElementById('prev');
-var next = document.getElementById('next');
-var images = sliderContainer.children;
-
-var leftWidth = new Array(images.length+1);
-leftWidth[0] = 0;
-for(var i = 0; i < images.length; i++){
-	
-	leftWidth[i+1]=-(i+1)*250;
-	images[i].style.marginLeft=(i*250)+'px';
-}
-
-var currentImageIndex = 0;
-var positive = true;
-
-var tick = 0;
-var paused = false;
-
-function process(){
-
-	if(!paused){
-		slide(positive);
-	}
-	if(positive && (parseInt(sliderContainer.style.marginLeft))<=leftWidth[currentImageIndex+1]){
-		
-		list[currentImageIndex].classList.remove('active');
-		
-		currentImageIndex++;
-
-		list[currentImageIndex].classList.add('active');
-		
-		paused=true;
-		tick=0;
-
-		if(currentImageIndex>=images.length-1){
-			positive=false;
-			currentImageIndex=images.length;
-		}
-	}
-	else if(!positive && (parseInt(sliderContainer.style.marginLeft))>=leftWidth[currentImageIndex-1]){
-		// console.log(currentImageIndex);
-		var temp=currentImageIndex;
-		if(currentImageIndex==images.length)
-			temp--;
-		
-		list[temp].classList.remove('active');
-		
-		currentImageIndex--;
-
-		list[currentImageIndex].classList.add('active');
-		
-		paused=true;
-		tick=0;
-		
-		if(currentImageIndex<=0){
-			positive=true;
-			currentImageIndex=0;
-		}	
-	}
-	
-	tick++;
-
-	if(paused && tick>=30){
-		paused=false;
-
-	}
-}
-
-function slide(positive){
-	var slidePos = positive?-1:1;
-	sliderContainer.style.marginLeft=(parseInt(sliderContainer.style.marginLeft)+slidePos)+'px';
-}	
-
-var mainInterval=false;
-var nextInterval=false;
-var prevInterval=false;
-
-function run(){
-	mainInterval=setInterval(process,30);
-}
-
-prev.addEventListener('click',function(e){
-	if(!prevInterval && currentImageIndex>0){
-
-		positive=false;
-
-		clearInterval(mainInterval);
-
-		var temp=currentImageIndex;
-
-		prevInterval=setInterval(function(){
-			
-			if(temp!=currentImageIndex || parseInt(sliderContainer.style.marginLeft)==0){
-				console.log('Prev Ended');
-				clearInterval(prevInterval);
-				prevInterval=false;
-				run();
-			}
-
-			process();
-			
-		},5);	
-	}
-});
-
-next.addEventListener('click',function(e){
-	if(!nextInterval && currentImageIndex<images.length-1){
-
-		positive=true;
-
-		clearInterval(mainInterval);
-
-		var temp=currentImageIndex;
-
-		nextInterval=setInterval(function(){
-			process();
-			
-			if(temp!=currentImageIndex){
-				console.log('next Ended');
-				clearInterval(nextInterval);
-				nextInterval=false;
-				run();
-			}
-			
-		},5);	
-	}
-});
-
-var listInterval;
-
-document.addEventListener('click',function(e){
-	var target=e.target;
-	if(!listInterval && target.parentNode.getAttribute('id')=='list'){
-		var selectedList=target.getAttribute('id');
-
-
-		
-		var temp=currentImageIndex;
-		
-		var count=Math.abs(selectedList-currentImageIndex)+1;
-
-		console.log(selectedList,temp);
-		if(selectedList>temp+1){
-			clearInterval(mainInterval);
-
-			positive=true;
-			listInterval=setInterval(function(){
-				process();
-				
-				if(currentImageIndex+1>=selectedList){
-					
-					clearInterval(listInterval);
-					listInterval=false;
-					run();
-				}
-				
-			},5);
-
-		}
-		else if(selectedList<temp+1){
-			clearInterval(mainInterval);
-
-			positive=false;
-			
-			listInterval=setInterval(function(){
-
-				process();
-				
-				if( currentImageIndex<selectedList){
-
-					clearInterval(listInterval);
-					listInterval=false;
-					run();
-				}
-			},5);
-		}
-		
-	}
-});
-
-run();

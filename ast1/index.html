@@ -3,74 +3,17 @@
 <head>
 	<title>Assignment 1</title>
 	<style type="text/css">
-		#slider-container-wrapper{
-			width: 250px;
-			height: 500px;
-			overflow: hidden;
-			position: relative;
-			border: 5px solid green;
-			
-		}
-		#slider-container{
-			min-width: 1000%;
-			position: relative;
-			margin-left: 0px;
-		}
-		#slider-container img{
-			/*display: none;*/
-			position: absolute;
-			float: left;
-		}
-		.clearfix::after {
-		    content: "";
-		    clear: both;
-		    display: table;
-		}
-		#slider-container-wrapper button#prev{
-			position: absolute;
-			bottom: 0px;
-			left: 20%;
-		}
-		#slider-container-wrapper button#next{
-			position: absolute;
-			bottom: 0px;
-			left: 50%;
-		}
-		ul{
-			list-style-type: none;
-		}
-		ul li{
-			border: 1px solid green;
-			width: 15px;
-			height: 15px;
-			margin-left: 10px;
-			float: left;
-			border-radius: 50%;
-		}
-		ul li.active{
-			background: red;
-		}
 	</style>
-	<!-- <script type="text/javascript" src="script.js"></script> -->
 </head>
 <body>
-	<!-- <div id="silder"> -->
-		<div id="slider-container-wrapper">
-			<div id="slider-container">
-				<img src="1.jpg" alt="Image 1">
-				<img src="2.jpg" alt="Image 2">
-				<img src="3.jpg" alt="Image 3">
-			</div>
-			<button id="prev">Prev</button>
-			<button id="next">Next</button>
-		</div>
-		<ul id="list">
-			<li id="1"></li>
-			<li id="2"></li>
-			<li id="3"></li>
-		</ul>	
-	<!-- </div> -->
-	
-	<script type="text/javascript" src="scripts.js">	</script>
+	<div id="slider">
+		<img src="1.jpg" alt="Image 1">
+		<img src="2.jpg" alt="Image 2">
+		<img src="3.jpg" alt="Image 3">
+	</div>
+	<script type="text/javascript" src="scripts.js"></script>
+	<script type="text/javascript">
+		new Slider('slider');
+	</script>
 </body>
 </html>
