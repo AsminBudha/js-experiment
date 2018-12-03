@@ -3,7 +3,6 @@ var moveY=[-1 , -1 , 0 , 1 , 1 ,  1 ,  0 , -1];
 
 var UP=0,UP_RIGHT=1,RIGHT=2,DOWN_RIGHT=3,DOWN=4,DOWN_LEFT=5,LEFT=6,UP_LEFT=7;
 
-var balls=[];
 function changeDirection(direction){
     switch(direction){
         case UP:
@@ -42,18 +41,17 @@ function Ball(x,y,radius,index){
     this.radius=radius;
     this.direction;
     this.elem;
-    
+    this.direction=Math.floor(Math.random()*8);    
+    this.speed=Math.floor(Math.random()*5);
+        
     this.move=function(){
-        this.direction=Math.floor(Math.random()*8);
         
-        var speed=Math.floor(Math.random()*100);
-        
-        setInterval(function(){
+        // setInterval(function(){
 
             that.update(moveX[that.direction],moveY[that.direction]);
             that.checkCollision();
 
-        },speed);
+        // },speed);
     };
     this.update=function(x,y){
         this.elem.style.top=parseInt(this.elem.style.top)+y+'px';
@@ -65,7 +63,14 @@ function Ball(x,y,radius,index){
     	
     	//Container collison
     	if(this.x+this.radius>=500 || this.x-this.radius<=0 || this.y-this.radius<=0 || this.y+radius>=500){
-            this.direction=changeDirection(this.direction);
+            if(this.direction%2==1){
+                this.direction=(this.direction+2)%8;
+            }
+            else{
+                this.direction=(this.direction+4)%8;    
+            }
+            // return;
+            // this.direction=changeDirection(this.direction);
         }
 
         //Ball Collision
@@ -74,12 +79,12 @@ function Ball(x,y,radius,index){
                 continue;
             var nextBall=balls[i];
             // console.log(nextBall.radius+this.radius,distanceFromThis(nextBall.x,nextBall.y));
-            if(nextBall.radius+this.radius>this.distanceFromThis(nextBall.x,nextBall.y)){
+            if(nextBall.radius+this.radius>=this.distanceFromThis(nextBall.x,nextBall.y)){
                 // console.log('Here');
                 var temp=this.direction;
                 this.direction=nextBall.direction;
                 nextBall.direction=temp;
-            }    
+            }
         }
         
     };    
@@ -109,7 +114,11 @@ function Ball(x,y,radius,index){
     }
 }
 
-function main(){    
+var balls=[];
+var ballIndex=0;
+function main(){
+    var timers=[];
+    var timer=0;
 	for(var i=0;i<10;i++){
 
         var r=Math.ceil((Math.random()*20)+10);
@@ -117,13 +126,31 @@ function main(){
         var x=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
         var y=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
         
-        console.log(r,x,y);
-
         var ball=new Ball(x,y,r,i);
         ball.draw();
         ball.move();        
         balls.push(ball);
+        timers.push(0);
     }
+    balls.sort(compare);
+    
+    setInterval(function(){
+        timer++;
+        for(var i=0;i<balls.length;i++){
+            timers[i]++;
+            if(timers[i]>=balls[i].speed){
+                balls[i].move();
+                timers[i]=0;
+            }
+            // else{
+            //     balls[i].checkCollision();
+            // }
+        }
+    });
+}
+
+function compare(a,b){
+    return a.speed>b.speed;
 }
 
 main();
