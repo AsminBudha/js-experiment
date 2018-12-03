@@ -1,4 +1,4 @@
-const GAP=150;
+const GAP=200;
 const CONTAINER_HEIGHT=600;
 const CONTAINER_WIDTH=1300;
 
@@ -34,7 +34,11 @@ class Bird{
 	}
 
 	update(){
-		this.y+=this.down;
+		if(this.down==-1){
+			this.y-=2;
+		}
+		else
+			this.y+=this.down;
 		this.elem.style.top=this.y+'px';
 
 	}
@@ -42,11 +46,13 @@ class Bird{
 	changeBirdMove(position){
 		this.elem.style.backgroundPosition=`0px -${this.height*position}px`;
 	}
+	remove(){
+		document.getElementById('container').removeChild(this.elem);
+	}
 }
 
 class Pipe{
 	constructor(min,max){
-		console.log(min,CONTAINER_HEIGHT-GAP-max);
 		this.y=getRandomInt(min,CONTAINER_HEIGHT-GAP-max);
 		this.width=20;
 
@@ -79,8 +85,6 @@ class Pipe{
 	update(){
 		let left=parseInt(this.elemTop.style.left);
 
-		// console.log(this.elemTop.style.marginLeft,left);
-
 		this.elemTop.style.left=left-1+'px';
 		this.elemBottom.style.left=left-1+'px';
 
@@ -97,7 +101,6 @@ class Pipe{
 	remove(){
 		document.getElementById('container').removeChild(this.elemTop);
 		document.getElementById('container').removeChild(this.elemBottom);
-		
 	}
 }
 
@@ -106,45 +109,56 @@ class Game{
 		this.bird=new Bird();
 		this.pipes=[];
 		gameTHAT=this;
+
+		this.score=0;
+
 	}
 
 	init(){
 		this.gameStart=false;
 		this.gameOver=false;
 
-		document.addEventListener('keydown', (event) => {
-			if(!gameTHAT.gameOver && !gameTHAT.gameStart && event.keyCode==32){
-				
-				gameTHAT.gameStart=true;
-				gameTHAT.start();	
-
-				gameTHAT.msgBoard.style.display='none';
-			}
-		});
+		document.addEventListener('keydown',this.keyHandler);
 
 		this.msgBoard=document.getElementById('msgBoard');
 
+		this.msgBoard.children[0].innerHTML='Welcome To Flappy World';
+		this.msgBoard.children[1].innerHTML='Press Space To Start Game';
+
+		this.scoreBoard=document.getElementById('scoreBoard');
+		this.scoreBoard.innerHTML=this.score;
 		
 	}
+	keyHandler(event){
+		if(!gameTHAT.gameOver && !gameTHAT.gameStart && event.keyCode==32){		
+			gameTHAT.gameStart=true;
+			gameTHAT.start();	
+			gameTHAT.msgBoard.style.display='none';
+		}
+		else if(gameTHAT.gameOver && event.keyCode==32){
+			gameTHAT.bird.remove();
+			while(gameTHAT.pipes.length>0){
+				gameTHAT.pipes[0].remove();
+				gameTHAT.pipes.shift();
+			}
 
+			game=new Game();
+			
+			game.init();
+		}
+		else if(!gameTHAT.gameOver && gameTHAT.gameStart && event.keyCode==32){
+
+			gameTHAT.bird.down=-1;
+			gameTHAT.isBirdUp=1;
+		}
+	}
 	start(){
 		let tick=0;
 		let curMin=0,curMax=20;
 		
-		let isBirdUp=0;
+		this.isBirdUp=0;
 
-		let scoreBoard=document.getElementById('scoreBoard');
-
-		document.addEventListener('keydown', (event) => {
-			if(gameTHAT.gameStart && event.keyCode==32){
-				gameTHAT.bird.down=-1;
-				isBirdUp=1;	
-			}
-		});
-		
 		let pipePointer=0;
-
-		this.score=0;
 
 		let birdMovePointer=0;
 
@@ -169,8 +183,7 @@ class Game{
 				pipePointer++;
 
 				gameTHAT.score++;
-				scoreBoard.innerHTML=gameTHAT.score;
-				// console.log(score);
+				gameTHAT.scoreBoard.innerHTML=gameTHAT.score;
 			}
 			if(gameTHAT.pipes.length>0 && gameTHAT.pipes[0].getX()+20<0){
 
@@ -210,17 +223,16 @@ class Game{
 				gameTHAT.stop();
 			}
 			else{
-
 				gameTHAT.bird.update();
 			}
 
-			if(isBirdUp){
-				isBirdUp++;
+			if(gameTHAT.isBirdUp){
+				gameTHAT.isBirdUp++;
 			}
 
-			if(isBirdUp>=20){
+			if(gameTHAT.isBirdUp>=20){
 				gameTHAT.bird.down=1;
-				isBirdUp=0;
+				gameTHAT.isBirdUp=0;
 			}
 
 		},10);
@@ -232,7 +244,7 @@ class Game{
 		clearInterval(this.gameInterval);
 
 		this.msgBoard.children[0].innerHTML='Game Over';
-		this.msgBoard.children[1].innerHTML=`Your score is ${this.score}`;
+		this.msgBoard.children[1].innerHTML=`Your score is ${this.score} <br> Press Space To Restart`;
 		this.msgBoard.style.display='block';
 	}
 }
@@ -243,4 +255,5 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
 }
 
-(new Game()).init();
+var game=new Game();
+game.init();
