@@ -3,36 +3,6 @@ var moveY=[-1 , -1 , 0 , 1 , 1 ,  1 ,  0 , -1];
 
 var UP=0,UP_RIGHT=1,RIGHT=2,DOWN_RIGHT=3,DOWN=4,DOWN_LEFT=5,LEFT=6,UP_LEFT=7;
 
-function changeDirection(direction){
-    switch(direction){
-        case UP:
-            direction=DOWN;
-            break;
-        case DOWN:
-            direction=UP;
-            break;
-        case LEFT:
-            direction=RIGHT;
-            break;
-        case RIGHT:
-            direction=LEFT;
-            break;
-        case UP_LEFT:
-            direction=DOWN_RIGHT;
-            break;
-        case DOWN_RIGHT:
-            direction=UP_LEFT;
-            break;
-        case UP_RIGHT:
-            direction=DOWN_LEFT;
-            break;
-        case DOWN_LEFT:
-            direction=UP_RIGHT;
-            break;
-    }
-    return direction;
-}
-
 function Ball(x,y,radius,index){
     var that=this;
     this.x=x;
@@ -48,9 +18,9 @@ function Ball(x,y,radius,index){
         
         // setInterval(function(){
 
-            that.update(moveX[that.direction],moveY[that.direction]);
-            that.checkCollision();
-
+        that.update(moveX[that.direction],moveY[that.direction]);
+        that.checkCollision();
+        // console.log(this.x,this.elem.style.left,this.radius);
         // },speed);
     };
     this.update=function(x,y){
@@ -63,20 +33,23 @@ function Ball(x,y,radius,index){
     	
     	//Container collison
     	if(this.x+this.radius>=500 || this.x-this.radius<=0 || this.y-this.radius<=0 || this.y+radius>=500){
+            
             if(this.direction%2==1){
+
                 this.direction=(this.direction+2)%8;
             }
             else{
-                this.direction=(this.direction+4)%8;    
+                this.direction=(this.direction+4)%8;   
+
             }
-            // return;
-            // this.direction=changeDirection(this.direction);
+
+            return true;
         }
 
         //Ball Collision
         for(var i=0;i<balls.length;i++){
             if(i==this.index)
-                continue;
+                break;
             var nextBall=balls[i];
             // console.log(nextBall.radius+this.radius,distanceFromThis(nextBall.x,nextBall.y));
             if(nextBall.radius+this.radius>=this.distanceFromThis(nextBall.x,nextBall.y)){
@@ -84,6 +57,8 @@ function Ball(x,y,radius,index){
                 var temp=this.direction;
                 this.direction=nextBall.direction;
                 nextBall.direction=temp;
+                // nextBall.update(moveX[nextBall.direction],moveY[nextBall.direction]);
+                return true;
             }
         }
         
@@ -112,6 +87,13 @@ function Ball(x,y,radius,index){
         // console.log(x1,x);
         return Math.sqrt((delx*delx)+(dely*dely));
     }
+    this.remove=function(){
+        // console.log('Working');
+
+        var container=document.getElementById('container');
+        // console.log(container);
+        container.removeChild(this.elem);
+    }
 }
 
 var balls=[];
@@ -119,20 +101,27 @@ var ballIndex=0;
 function main(){
     var timers=[];
     var timer=0;
-	for(var i=0;i<10;i++){
+	for(var i=0;i<3;i++){
+        do{
+            if(balls.length>i){
+                balls[i].remove();
+            }
+            var r=Math.ceil((Math.random()*20)+10);
+            // console.log();
+            var x=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
+            var y=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
+            
+            var ball=new Ball(x,y,r,i);
+            ball.draw();
+            ball.move();        
+            balls[i]=(ball);
+            // console.log('Collision',i,balls.length);
 
-        var r=Math.ceil((Math.random()*20)+10);
-        // console.log();
-        var x=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
-        var y=Math.ceil((Math.random()*500)%(500-(2*r+1))+r);
-        
-        var ball=new Ball(x,y,r,i);
-        ball.draw();
-        ball.move();        
-        balls.push(ball);
+        }while(balls[i].checkCollision());
+
         timers.push(0);
     }
-    balls.sort(compare);
+    // balls.sort(compare);
     
     setInterval(function(){
         timer++;
