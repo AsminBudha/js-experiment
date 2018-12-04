@@ -163,6 +163,7 @@ class Game{
 		let birdMovePointer=0;
 
 		this.gameInterval=setInterval(function(){
+			
 			for(let i=0;i<gameTHAT.pipes.length;i++){
 				gameTHAT.pipes[i].update();
 
