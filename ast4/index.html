@@ -9,7 +9,7 @@
 			border: 1px solid green;
 			margin-left: 10%;
 			position: relative;
-			/*overflow: hidden;*/
+			overflow: hidden;
 		}
 		input{
 			margin-left: 40%;
@@ -22,13 +22,15 @@
 			color: blue;
 		}
 		#msgBoard{
+			position: absolute;
 			background-color: green;
 			color: white;
 			text-align: center;
 			padding: 30px;
 			width: 500px;
-			margin-left: 20%;
-			margin-top: 10%;
+			left: 20%;
+			top: 10%;
+			z-index: 2;
 		}
 
 	</style>
@@ -36,10 +38,10 @@
 <body>
 	<div id="container">
 		<span id="scoreBoard">0</span>
-		<!-- <div id="msgBoard">
+		<div id="msgBoard">
 			<h1>Welcome To Typing Tutor</h1>
 			<p>Press Space To Start Game</p>
-		</div> -->
+		</div>
 	</div>
 	<input type="input" name="">
 	<script type="text/javascript" src="script.js"></script>

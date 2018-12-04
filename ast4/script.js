@@ -94,12 +94,25 @@ class Game{
 	}
 
 	init(){
-		let timer=0;
 		
 		this.scoreBoard.innerHTML=this.score;
 
 		document.addEventListener('keydown',this.keyHandler);
 
+		this.gameStart=false;
+		this.gameover=false;
+
+		let msgBoard=document.getElementById('msgBoard');
+		
+		msgBoard.children[0].innerHTML='Welcome To Typing Tutor';
+		msgBoard.children[1].innerHTML=`Press Space to Start`;
+
+
+	}
+
+	start(){
+		let timer=0;
+		
 		this.gameInterval=setInterval(function(){
 			timer++;
 			if(timer>=100 || gameThat.words.length<=0){
@@ -127,15 +140,48 @@ class Game{
 				gameThat.words[i].move();
 			}
 			if(gameThat.words.length>0 && gameThat.words[0].y>=500){
-				clearInterval(gameThat.gameInterval);
-				gameThat.words[0].remove();
-				gameThat.words.shift();
-
+				
+				// gameThat.words[0].remove();
+				// gameThat.words.shift();
+				gameThat.stop();
 			}
 		},50);
 	}
 
+	stop(){
+		clearInterval(gameThat.gameInterval);
+		
+		let msgBoard=document.getElementById('msgBoard');
+		msgBoard.style.display='block';
+		
+		msgBoard.children[0].innerHTML='Game Over';
+		msgBoard.children[1].innerHTML=`Your Score is ${gameThat.score} <br><br> Press Space to Restart`;
+
+		gameThat.gameStart=false;
+		gameThat.gameover=true;
+	}
+
+	resetGame(){
+		for(let i=0;i<gameThat.words.length;i++){
+			gameThat.words[i].remove();
+			console.log('Working');
+		}
+		console.log('Reset');
+		game=new Game();
+		game.init();
+	}
+
 	keyHandler(event){
+		if(!gameThat.gameover && !gameThat.gameStart && event.keyCode==32){
+			gameThat.gameStart=true;
+			gameThat.start();
+
+			document.getElementById('msgBoard').style.display='none';
+			return;
+		}
+		else if(gameThat.gameover && event.keyCode==32){
+			gameThat.resetGame();
+		}
 		let char;
 		if (event.keyCode >= 65 && event.keyCode <= 90) {
 		    // Alphabet upper case
@@ -170,7 +216,7 @@ class Game{
 				}
 				return match;
 			})
-			console.log(matched);
+			// console.log(matched);
 			if(matched){
 				gameThat.reset();
 			}
@@ -217,7 +263,8 @@ class Game{
 
 }
 
-(new Game()).init();
+var game=new Game();
+game.init();
 
 function getRandomInt(min, max) {
   min = Math.ceil(min);
