@@ -1,0 +1,71 @@
+#container{
+  height: 350px;
+  width: 1000px;
+  border: 1px solid green;
+  margin-left: 10%;
+  position: relative;
+  overflow: hidden;
+}
+input{
+  margin-left: 40%;
+}
+#scoreBoard{
+  margin-left: 20px;
+}
+.highlight{
+  color: blue;
+}
+#msgBoard{
+  position: absolute;
+  background-color: green;
+  color: white;
+  text-align: center;
+  padding: 30px;
+  width: 500px;
+  left: 20%;
+  top: 10%;
+  z-index: 2;
+}
+#keyboard1{
+  background:#0C0A09;/* #eaeaea;*/
+  width: 660px;
+  position: absolute;
+  padding: 10px;
+  padding-bottom: 0px;
+  /* border: 1px solid #a9a9a9; */
+  bottom: 25%;
+  left: 20%;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+#keyboard2{
+  background:#0C0A09;/* #eaeaea;*/
+  width: 660px;
+  text-align: center;
+  position: absolute;
+  padding: 10px;
+  /* padding-left: 3%; */
+  /* border: 1px solid #a9a9a9; */
+  bottom: 12%;
+  left: 20%;
+  /* border-radius: 10px; */
+}
+#keyboard3{
+  background:#0C0A09;/* #eaeaea;*/
+  width: 660px;
+  text-align: center;
+  position: absolute;
+  padding: 10px;
+  bottom: 0%;
+  left: 20%;
+}
+#keyboard1 span,#keyboard2 span,#keyboard3 span{
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  padding: 15px;
+  border: 1px solid #9a9a9a;
+  box-shadow:0 0 5px #999999;
+  background-color: #eaeaea;
+  margin: 7px;
+}
