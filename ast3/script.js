@@ -54,38 +54,64 @@ class Bird{
 class Pipe{
 	constructor(min,max){
 		this.y=getRandomInt(min,CONTAINER_HEIGHT-GAP-max);
-		this.width=20;
-
+		this.width=50;
+		this.container=document.getElementById('container');
 		this.draw();
+		
 	}
 
 	draw(){
 		this.elemTop=document.createElement('div');
 		// this.elemTop.classList.add('top');
 		this.elemTop.style.background='url(pipe-down.png)';
+		this.elemTop.style.backgroundSize='100% 100%';
 		this.elemTop.style.position='absolute';
 		this.elemTop.style.top='0px';
-		this.elemTop.style.height=this.y+'px';
+		this.elemTop.style.height=(this.y-30)+'px';
 		this.elemTop.style.width=this.width+'px';
 		this.elemTop.style.left='1300px';
+		
+		this.elemTopHead = document.createElement('div');
+		this.elemTopHead.style.background='url(pipe-up.png)';
+		this.elemTopHead.style.backgroundSize='100% 100%';
+		this.elemTopHead.style.position='absolute';
+		this.elemTopHead.style.top=(this.y-30)+'px';
+		this.elemTopHead.style.height='30px';
+		this.elemTopHead.style.width=this.width+20+'px';
+		this.elemTopHead.style.left='1290px';
+		
+
+		this.elemBottomHead=document.createElement('div');
+		this.elemBottomHead.style.background='url(pipe-down.png)';
+		this.elemBottomHead.style.backgroundSize='100% 100%';
+		this.elemBottomHead.style.position='absolute';
+		this.elemBottomHead.style.top=this.y+GAP+'px';
+		this.elemBottomHead.style.height='30px';
+		this.elemBottomHead.style.width=this.width+20+'px';
+		this.elemBottomHead.style.left='1290px';
 
 		this.elemBottom=document.createElement('div');
 		this.elemBottom.style.background='url(pipe-down.png)';
+		this.elemBottom.style.backgroundSize='100% 100%';
 		this.elemBottom.style.position='absolute';
-		this.elemBottom.style.top=this.y+GAP+'px';
-		this.elemBottom.style.height=CONTAINER_HEIGHT-(this.y+GAP)+'px';
-		this.elemBottom.style.width='20px';
+		this.elemBottom.style.top=this.y+GAP+30+'px';
+		this.elemBottom.style.height=CONTAINER_HEIGHT-30-(this.y+GAP)+'px';
+		this.elemBottom.style.width=this.width+'px';
 		this.elemBottom.style.left='1300px';
-		this.elemBottom.classList.add('bottom');
 
-		document.getElementById('container').appendChild(this.elemTop);
-		document.getElementById('container').appendChild(this.elemBottom);
+ 
+		this.container.appendChild(this.elemTop);
+		this.container.appendChild(this.elemTopHead);
+		this.container.appendChild(this.elemBottomHead);
+		this.container.appendChild(this.elemBottom);
 	}
 
 	update(){
 		let left=parseInt(this.elemTop.style.left);
 
 		this.elemTop.style.left=left-1+'px';
+		this.elemTopHead.style.left=left-11+'px';
+		this.elemBottomHead.style.left=left-11+'px';
 		this.elemBottom.style.left=left-1+'px';
 
 	}
@@ -95,12 +121,14 @@ class Pipe{
 	}
 
 	getX(){
-		return parseInt(this.elemTop.style.left);
+		return parseInt(this.elemTopHead.style.left);
 	}
 
 	remove(){
-		document.getElementById('container').removeChild(this.elemTop);
-		document.getElementById('container').removeChild(this.elemBottom);
+		this.container.removeChild(this.elemTop);
+		this.container.removeChild(this.elemTopHead);
+		this.container.removeChild(this.elemBottomHead);
+		this.container.removeChild(this.elemBottom);
 	}
 }
 
@@ -196,7 +224,7 @@ class Game{
 			
 			//Checks when to insert new pipe
 			tick++;
-			if(tick>=200){
+			if(tick>=200 || gameTHAT.pipes.length==0){
 				tick=0;
 
 				let p=new Pipe(curMin,curMax);
