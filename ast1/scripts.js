@@ -25,7 +25,7 @@ class Slider{
     this.orgSlideLeft=null;
     this.toBeSlide=0;
     this.prev.addEventListener('click',function(e){
-      if(sliderThat.orgSlideLeft==null && sliderThat.marginLeft<0){
+      if(sliderThat.orgSlideLeft==null && Math.abs(sliderThat.marginLeft)>0){
         sliderThat.slideTimes(false);
       }
     });    
@@ -109,6 +109,12 @@ class Slider{
         // console.log('Up',sliderThat.marginLeft);
       }
       else{
+        if(Math.abs(sliderThat.marginLeft)>0
+          && Math.abs(sliderThat.marginLeft)<sliderThat.width*(sliderThat.images.length-1) 
+          && Math.abs(sliderThat.marginLeft)%sliderThat.width==0){
+          console.log(sliderThat.marginLeft);
+          sliderThat.changeActiveList();
+        }
         sliderThat.update();
       }
       return;

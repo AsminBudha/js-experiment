@@ -2,38 +2,8 @@
 <html>
 <head>
 	<title>Typing Tutor</title>
-	<style type="text/css">
-		#container{
-			height: 500px;
-			width: 1000px;
-			border: 1px solid green;
-			margin-left: 10%;
-			position: relative;
-			overflow: hidden;
-		}
-		input{
-			margin-left: 40%;
-			
-		}
-		#scoreBoard{
-			margin-left: 20px;
-		}
-		.highlight{
-			color: blue;
-		}
-		#msgBoard{
-			position: absolute;
-			background-color: green;
-			color: white;
-			text-align: center;
-			padding: 30px;
-			width: 500px;
-			left: 20%;
-			top: 10%;
-			z-index: 2;
-		}
-
-	</style>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="reset.css">
 </head>
 <body>
 	<div id="container">
@@ -43,7 +13,10 @@
 			<p>Press Space To Start Game</p>
 		</div>
 	</div>
-	<input type="input" name="">
+  <input type="input" name="" disabled=true>
+  <div id="keyboard1"></div>
+  <div id="keyboard2"></div>
+  <div id="keyboard3"></div>
 	<script type="text/javascript" src="script.js"></script>
 </body>
 </html>

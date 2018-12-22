@@ -1,5 +1,5 @@
 class Word{
-	
+
 	constructor(){
 		this.x;
 		this.y;
@@ -15,13 +15,12 @@ class Word{
 			let temp=getRandomInt(0,26);
 
 			this.letters.push(String.fromCharCode(97+temp));
-			
+
 			let child=document.createElement('span');
 			child.innerHTML=this.letters[i];
 			this.childs.push(child);
 			this.elem.appendChild(child);
 		}
-		
 	}
 
 	draw(){
@@ -37,7 +36,7 @@ class Word{
 	move(){
 		this.y++;
 		this.elem.style.top=this.y+'px';
-	}	
+	}
 	match(c){
 		if(this.letters[this.matchedLen]==c){
 			this.childs[this.matchedLen].classList.add('highlight');
@@ -56,12 +55,11 @@ class Word{
 			for(let i=0;i<this.matchedLen;i++){
 				this.childs[i].classList.remove('highlight');
 			}
-			// this.matchedLen--;
 			return false;
 		}
 	}
 	matchAll(){
-		
+
 		for(let i=0;i<this.matchedLen;i++){
 			this.childs[i].classList.add('highlight');
 		}
@@ -90,11 +88,16 @@ class Game{
 		this.input.value=this.inputTxt;
 
 		this.scoreBoard=document.getElementById('scoreBoard');
-		this.score=0;
-	}
+    this.score=0;
+
+    this.key2Index = {};
+    this.keySpans=[];
+
+  }
 
 	init(){
-		
+    this.container=document.getElementById('container');
+
 		this.scoreBoard.innerHTML=this.score;
 
 		document.addEventListener('keydown',this.keyHandler);
@@ -103,16 +106,15 @@ class Game{
 		this.gameover=false;
 
 		let msgBoard=document.getElementById('msgBoard');
-		
+
 		msgBoard.children[0].innerHTML='Welcome To Typing Tutor';
 		msgBoard.children[1].innerHTML=`Press Space to Start`;
-
-
+    this.drawKeyboard();
 	}
 
 	start(){
 		let timer=0;
-		
+
 		this.gameInterval=setInterval(function(){
 			timer++;
 			if(timer>=100 || gameThat.words.length<=0){
@@ -138,11 +140,10 @@ class Game{
 			}
 			for(let i=0;i<gameThat.words.length;i++){
 				gameThat.words[i].move();
-			}
-			if(gameThat.words.length>0 && gameThat.words[0].y>=500){
-				
-				// gameThat.words[0].remove();
-				// gameThat.words.shift();
+      }
+      // console.log(gameThat.container.style);
+			if(gameThat.words.length>0 && gameThat.words[0].y>=350){
+
 				gameThat.stop();
 			}
 		},50);
@@ -150,10 +151,10 @@ class Game{
 
 	stop(){
 		clearInterval(gameThat.gameInterval);
-		
+
 		let msgBoard=document.getElementById('msgBoard');
 		msgBoard.style.display='block';
-		
+
 		msgBoard.children[0].innerHTML='Game Over';
 		msgBoard.children[1].innerHTML=`Your Score is ${gameThat.score} <br><br> Press Space to Restart`;
 
@@ -164,12 +165,24 @@ class Game{
 	resetGame(){
 		for(let i=0;i<gameThat.words.length;i++){
 			gameThat.words[i].remove();
-			console.log('Working');
 		}
-		console.log('Reset');
 		game=new Game();
 		game.init();
 	}
+
+  changeColorKey(key){
+    var index = this.key2Index[key];
+    gameThat.keySpans[index].style.background =gameThat.randomColor();
+    setTimeout(function () {
+        gameThat.keySpans[index].style.backgroundColor = '#eaeaea';
+    }, 100);
+  }
+
+  randomColor(){
+    return 'rgb('+Math.floor(Math.random()*256)
+        +','+Math.floor(Math.random()*256)
+        +','+Math.floor(Math.random()*256)+')';
+  }
 
 	keyHandler(event){
 		if(!gameThat.gameover && !gameThat.gameStart && event.keyCode==32){
@@ -181,14 +194,19 @@ class Game{
 		}
 		else if(gameThat.gameover && event.keyCode==32){
 			gameThat.resetGame();
-		}
+    }
+    else if(!gameThat.gameStart){
+      return;
+    }
 		let char;
 		if (event.keyCode >= 65 && event.keyCode <= 90) {
 		    // Alphabet upper case
-		    char=String.fromCharCode(97+(event.keyCode-65));
+        char=String.fromCharCode(97+(event.keyCode-65));
+        gameThat.changeColorKey(char)
 		} else if (event.keyCode >= 97 && event.keyCode <= 122) {
 		    // Alphabet lower case
-		    char = String.fromCharCode(event.keyCode);
+        char = String.fromCharCode(event.keyCode);
+        gameThat.changeColorKey(char);
 		}
 
 		if(char){
@@ -199,14 +217,11 @@ class Game{
 
 			gameThat.matchedWords=gameThat.matchedWords.filter(function(val){
 				let match;
-				// if(gameThat.inputTxt=='') return true; 
 				match=val.match(char);
 				if(val.matchedLen>=val.letters.length){
 					match=false;
 					let index=gameThat.words.indexOf(val);
 					val.remove();
-					
-					// gameThat.inputTxt='';
 
 					gameThat.score++;
 					gameThat.updateScore();
@@ -216,7 +231,6 @@ class Game{
 				}
 				return match;
 			})
-			// console.log(matched);
 			if(matched){
 				gameThat.reset();
 			}
@@ -228,7 +242,7 @@ class Game{
 			gameThat.matchedWords.forEach(function(item,index){
 				item.eraseLastMatch();
 			});
-			
+
 			var txtLen=gameThat.inputTxt.length;
 			for(let i=0;i<gameThat.words.length;i++){
 				if(gameThat.matchedWords.indexOf(gameThat.words[i])==-1){
@@ -241,9 +255,40 @@ class Game{
 			}
 		}
 	}
+  drawKeyboard() {
+    let keyboard=[];
+    keyboard.push(document.getElementById('keyboard1'));
+    keyboard.push(document.getElementById('keyboard2'));
+    keyboard.push(document.getElementById('keyboard3'));
 
+    for(let i=0;i<keyboard.length;i++){
+      keyboard[i].innerHTML='';
+    }
+
+    let character = "qwertyuiopasdfghjklzxcvbnm";
+    let charArray = character.split("");
+    this.key2Index = {};
+    this.keySpans=[];
+
+    let limit=9;
+    let currentIndex=0;
+    for (let i = 0; i < charArray.length; i++) {
+        let keySpan = document.createElement('span');
+        keySpan.innerHTML = charArray[i];
+        keyboard[currentIndex].appendChild(keySpan);
+        this.key2Index[charArray[i]]=i;
+        this.keySpans.push(keySpan);
+
+        if(i>=limit){
+          limit+=limit;
+          console.log(limit,currentIndex);
+          currentIndex++;
+          console.log(keyboard[currentIndex],keyboard)
+        }
+    }
+    // container.appendChild(keyboard);
+  }
 	reset(){
-		console.log('reset');
 		gameThat.inputTxt='';
 		gameThat.input.value=gameThat.inputTxt;
 		gameThat.matchedWords=[];
@@ -252,7 +297,6 @@ class Game{
 			while(gameThat.words[i].matchedLen>0){
 				gameThat.words[i].eraseLastMatch();
 			}
-			console.log(i);
 			gameThat.matchedWords.push(gameThat.words[i]);
 		}
 	}
